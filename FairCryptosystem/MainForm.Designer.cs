@@ -54,8 +54,8 @@ namespace FairCryptosystem
             this.ShadowsTextBox.Location = new System.Drawing.Point(12, 303);
             this.ShadowsTextBox.Multiline = true;
             this.ShadowsTextBox.Name = "ShadowsTextBox";
-            this.ShadowsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ShadowsTextBox.Size = new System.Drawing.Size(513, 135);
+            this.ShadowsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.ShadowsTextBox.Size = new System.Drawing.Size(1026, 135);
             this.ShadowsTextBox.TabIndex = 1;
             // 
             // buttonGenerateKey
@@ -80,16 +80,16 @@ namespace FairCryptosystem
             // 
             // RestoredSecretTextBox
             // 
-            this.RestoredSecretTextBox.Location = new System.Drawing.Point(608, 268);
+            this.RestoredSecretTextBox.Location = new System.Drawing.Point(559, 106);
             this.RestoredSecretTextBox.Multiline = true;
             this.RestoredSecretTextBox.Name = "RestoredSecretTextBox";
             this.RestoredSecretTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.RestoredSecretTextBox.Size = new System.Drawing.Size(430, 177);
+            this.RestoredSecretTextBox.Size = new System.Drawing.Size(479, 63);
             this.RestoredSecretTextBox.TabIndex = 4;
             // 
             // buttonRestoreKey
             // 
-            this.buttonRestoreKey.Location = new System.Drawing.Point(814, 164);
+            this.buttonRestoreKey.Location = new System.Drawing.Point(559, 39);
             this.buttonRestoreKey.Name = "buttonRestoreKey";
             this.buttonRestoreKey.Size = new System.Drawing.Size(160, 61);
             this.buttonRestoreKey.TabIndex = 5;
@@ -118,7 +118,7 @@ namespace FairCryptosystem
             // labelRestored
             // 
             this.labelRestored.AutoSize = true;
-            this.labelRestored.Location = new System.Drawing.Point(605, 246);
+            this.labelRestored.Location = new System.Drawing.Point(760, 90);
             this.labelRestored.Name = "labelRestored";
             this.labelRestored.Size = new System.Drawing.Size(127, 13);
             this.labelRestored.TabIndex = 8;
