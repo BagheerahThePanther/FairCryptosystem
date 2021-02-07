@@ -1,7 +1,7 @@
 ﻿
 namespace FairCryptosystem
 {
-    partial class MainForm
+    partial class MainFormCopy
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -38,6 +38,9 @@ namespace FairCryptosystem
             this.labelKey = new System.Windows.Forms.Label();
             this.labelShadows = new System.Windows.Forms.Label();
             this.labelRestored = new System.Windows.Forms.Label();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.buttonOpenFolder = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // SecretTextBox
@@ -124,11 +127,30 @@ namespace FairCryptosystem
             this.labelRestored.TabIndex = 8;
             this.labelRestored.Text = "Восстановленный ключ";
             // 
+            // treeView1
+            // 
+            this.treeView1.Location = new System.Drawing.Point(555, 187);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(376, 86);
+            this.treeView1.TabIndex = 9;
+            // 
+            // buttonOpenFolder
+            // 
+            this.buttonOpenFolder.Location = new System.Drawing.Point(956, 225);
+            this.buttonOpenFolder.Name = "buttonOpenFolder";
+            this.buttonOpenFolder.Size = new System.Drawing.Size(82, 48);
+            this.buttonOpenFolder.TabIndex = 10;
+            this.buttonOpenFolder.Text = "Открыть каталог";
+            this.buttonOpenFolder.UseVisualStyleBackColor = true;
+            this.buttonOpenFolder.Click += new System.EventHandler(this.buttonOpenFolder_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1050, 450);
+            this.Controls.Add(this.buttonOpenFolder);
+            this.Controls.Add(this.treeView1);
             this.Controls.Add(this.labelRestored);
             this.Controls.Add(this.labelShadows);
             this.Controls.Add(this.labelKey);
@@ -156,6 +178,9 @@ namespace FairCryptosystem
         private System.Windows.Forms.Label labelKey;
         private System.Windows.Forms.Label labelShadows;
         private System.Windows.Forms.Label labelRestored;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.Button buttonOpenFolder;
     }
 }
 

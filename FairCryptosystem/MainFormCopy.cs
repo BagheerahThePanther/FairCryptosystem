@@ -13,9 +13,9 @@ using System.Configuration;
 
 namespace FairCryptosystem
 {
-    public partial class MainForm : Form
+    public partial class MainFormCopy : Form
     {
-        public MainForm()
+        public MainFormCopy()
         {
             InitializeComponent();
         }
@@ -51,6 +51,17 @@ namespace FairCryptosystem
         {
             BigInteger result = SS.restoreSecret(shadowArr);
             RestoredSecretTextBox.Text = result.ToString("X", bigIntegerFormatter);
+        }
+
+        private void buttonOpenFolder_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog1.RootFolder = Environment.SpecialFolder.MyComputer;
+            folderBrowserDialog1.ShowDialog();
+        }
+
+        private void MainFormCopy_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
