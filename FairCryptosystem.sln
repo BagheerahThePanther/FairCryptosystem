@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FairCryptosystem", "FairCryptosystem\FairCryptosystem.csproj", "{1F5A851B-2742-4761-B3B3-8F224CCF7688}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyGeneration", "FairCryptosystem\KeyGeneration.csproj", "{1F5A851B-2742-4761-B3B3-8F224CCF7688}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyRestoration", "KeyRestoration\KeyRestoration.csproj", "{4DF78BEB-39CF-48C9-97D3-DF3AC21AA1AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{1F5A851B-2742-4761-B3B3-8F224CCF7688}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F5A851B-2742-4761-B3B3-8F224CCF7688}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F5A851B-2742-4761-B3B3-8F224CCF7688}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DF78BEB-39CF-48C9-97D3-DF3AC21AA1AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF78BEB-39CF-48C9-97D3-DF3AC21AA1AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DF78BEB-39CF-48C9-97D3-DF3AC21AA1AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF78BEB-39CF-48C9-97D3-DF3AC21AA1AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

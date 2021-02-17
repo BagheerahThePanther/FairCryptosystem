@@ -50,7 +50,7 @@ namespace FairCryptosystem
         private void buttonNext_ClickKey(object sender, EventArgs e)
         {
             secret = SS.generateNumber(keyLengthInBytes);
-            File.WriteAllBytes(pathToFolderTextBox.Text + keyFileName + "_" + SS.generateNumber(1).ToString(), secret.ToByteArray());
+            File.WriteAllBytes(pathToFolderTextBox.Text + keyFileName, secret.ToByteArray());
             changeToShadow1();
         }
 
@@ -63,19 +63,22 @@ namespace FairCryptosystem
             {
                 shadowArr[i] = new Shadow(shadows[i].Number, shadows[i].Value);
             }
-            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_" + SS.generateNumber(1).ToString(), shadowArr[0].ToByteArray());
+            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Number", shadowArr[0].Number.ToByteArray());
+            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Value", shadowArr[0].Value.ToByteArray());
             changeToShadow2();
         }
 
         private void buttonShadow2_Click(object sender, EventArgs e)
         {
-            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_" + SS.generateNumber(1).ToString(), shadowArr[1].ToByteArray());
+            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Number", shadowArr[1].Number.ToByteArray());
+            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Value", shadowArr[1].Value.ToByteArray());
             changeToShadow3();
         }
 
         private void buttonShadow3_Click(object sender, EventArgs e)
         {
-            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_" + SS.generateNumber(1).ToString(), shadowArr[2].ToByteArray());
+            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Number", shadowArr[2].Number.ToByteArray());
+            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Value", shadowArr[2].Value.ToByteArray());
         }
 
         private void changeToShadow1()
