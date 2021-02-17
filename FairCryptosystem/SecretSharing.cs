@@ -13,8 +13,9 @@ namespace FairCryptosystem
 {
     class SecretSharing
     {
-        private BigInteger modulus = BigInteger.Parse(ConfigurationManager.AppSettings.Get("Modulus"), new NumberFormatInfo());
-        private uint keyLengthInBytes = Convert.ToUInt32(ConfigurationManager.AppSettings.Get("KeyLengthInBytes"));
+        private readonly BigInteger modulus = BigInteger.Parse(ConfigurationManager.AppSettings.Get("Modulus"), new NumberFormatInfo());
+        private readonly uint keyLengthInBytes = Convert.ToUInt32(ConfigurationManager.AppSettings.Get("KeyLengthInBytes"));
+        private readonly uint shadowNumberLengthInBytes = Convert.ToUInt32(ConfigurationManager.AppSettings.Get("ShadowNumberLengthInBytes"));
 
         private static RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider();
 
@@ -42,14 +43,16 @@ namespace FairCryptosystem
             }
 
             BigInteger coefficientA = getModulus(generateNumber(keyLengthInBytes));
-            BigInteger currentNumber = 1;
+            //  BigInteger currentNumber = 1;
+            BigInteger currentNumber = generateNumber(shadowNumberLengthInBytes);
             foreach (Shadow shadow in shadows)
             {
                 BigInteger newValue = getModulus((coefficientA * currentNumber) + secret);
                 shadow.Number = currentNumber;
                 shadow.Value = newValue;
                 Console.WriteLine(secret.ToString() + " " + coefficientA.ToString() + " " + currentNumber.ToString() + " " + newValue.ToString());
-                currentNumber++;
+                //currentNumber++;
+                currentNumber = generateNumber(shadowNumberLengthInBytes);
             }
             return shadows;
         }
