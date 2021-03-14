@@ -30,7 +30,7 @@ namespace FairCryptosystem
             number = _number;
             value = _value;
         }
-        public Byte[] ToByteArray()
+        public byte[] ToByteArray()
         {
             return number.ToByteArray().Concat(value.ToByteArray()).ToArray();
         }

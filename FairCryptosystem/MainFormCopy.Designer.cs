@@ -51,6 +51,7 @@ namespace FairCryptosystem
             this.SecretTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.SecretTextBox.Size = new System.Drawing.Size(513, 127);
             this.SecretTextBox.TabIndex = 0;
+            this.SecretTextBox.TextChanged += new System.EventHandler(this.SecretTextBox_TextChanged);
             // 
             // ShadowsTextBox
             // 
@@ -144,7 +145,7 @@ namespace FairCryptosystem
             this.buttonOpenFolder.UseVisualStyleBackColor = true;
             this.buttonOpenFolder.Click += new System.EventHandler(this.buttonOpenFolder_Click);
             // 
-            // MainForm
+            // MainFormCopy
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -160,7 +161,7 @@ namespace FairCryptosystem
             this.Controls.Add(this.buttonGenerateKey);
             this.Controls.Add(this.ShadowsTextBox);
             this.Controls.Add(this.SecretTextBox);
-            this.Name = "MainForm";
+            this.Name = "MainFormCopy";
             this.Text = "MainForm";
             this.ResumeLayout(false);
             this.PerformLayout();

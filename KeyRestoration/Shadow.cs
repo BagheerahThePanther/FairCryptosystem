@@ -30,11 +30,9 @@ namespace KeyRestoration
             number = _number;
             value = _value;
         }
-        public Byte[] ToByteArray()
+        public byte[] ToByteArray()
         {
-            return number.ToByteArray().Concat(Encoding.ASCII.GetBytes(Environment.NewLine)).Concat(value.ToByteArray()).ToArray();
-
-            //   return number.ToByteArray().Concat(value.ToByteArray()).ToArray();
+            return number.ToByteArray().Concat(value.ToByteArray()).ToArray();
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Numerics;
 using System.Globalization;
 using System.Configuration;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace FairCryptosystem
 {
@@ -20,6 +21,8 @@ namespace FairCryptosystem
         {
             InitializeComponent();
         }
+
+        private RSA rsa = RSA.Create();
 
         private uint keyLengthInBytes = Convert.ToUInt32(ConfigurationManager.AppSettings.Get("KeyLengthInBytes"));
         private string keyFileName = ConfigurationManager.AppSettings.Get("KeyFileName");
@@ -65,6 +68,19 @@ namespace FairCryptosystem
             }
             File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Number", shadowArr[0].Number.ToByteArray());
             File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Value", shadowArr[0].Value.ToByteArray());
+
+            ////////////
+            ///
+            File.WriteAllText("D:\\public", rsa.ToXmlString(false));
+
+
+            RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
+
+            SHA256 sha256Hash = SHA256.Create();
+               rsaFormatter.SetHashAlgorithm("SHA256");
+            File.WriteAllBytes("D:\\sig1", rsaFormatter.CreateSignature(sha256Hash.ComputeHash(shadowArr[0].ToByteArray())));
+            //////////////
+
             changeToShadow2();
         }
 
@@ -72,6 +88,17 @@ namespace FairCryptosystem
         {
             File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Number", shadowArr[1].Number.ToByteArray());
             File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Value", shadowArr[1].Value.ToByteArray());
+
+            ////////////
+            RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
+
+            SHA256 sha256Hash = SHA256.Create();
+
+            rsaFormatter.SetHashAlgorithm("SHA256");
+            File.WriteAllBytes("D:\\sig2", rsaFormatter.CreateSignature(sha256Hash.ComputeHash(shadowArr[1].ToByteArray())));
+            //////////////
+
+
             changeToShadow3();
         }
 
@@ -79,6 +106,18 @@ namespace FairCryptosystem
         {
             File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Number", shadowArr[2].Number.ToByteArray());
             File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Value", shadowArr[2].Value.ToByteArray());
+
+
+            ////////////
+            RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
+
+            SHA256 sha256Hash = SHA256.Create();
+
+            rsaFormatter.SetHashAlgorithm("SHA256");
+            File.WriteAllBytes("D:\\sig3", rsaFormatter.CreateSignature(sha256Hash.ComputeHash(shadowArr[2].ToByteArray())));
+            //////////////
+
+            this.Close();
         }
 
         private void changeToShadow1()

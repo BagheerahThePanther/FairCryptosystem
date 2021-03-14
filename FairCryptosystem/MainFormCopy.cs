@@ -63,5 +63,10 @@ namespace FairCryptosystem
         {
 
         }
+
+        private void SecretTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

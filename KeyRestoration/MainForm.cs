@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Configuration;
 using System.Numerics;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace KeyRestoration
 {
@@ -20,6 +21,8 @@ namespace KeyRestoration
         {
             InitializeComponent();
         }
+
+        private RSA rsa = RSA.Create();
 
         private string keyFileName = ConfigurationManager.AppSettings.Get("KeyFileName");
         private string shadowFileName = ConfigurationManager.AppSettings.Get("ShadowFileName");
@@ -69,9 +72,38 @@ namespace KeyRestoration
             }
             /////
             ///
+
+            rsa.FromXmlString(File.ReadAllText("D:\\public"));
+            Console.WriteLine(rsa.ToXmlString(false));
+            ///
             shadowArr = new Shadow[2];
             shadowArr[0] = readShadowFromFolder(textBoxShadow1.Text);
             shadowArr[1] = readShadowFromFolder(textBoxShadow2.Text);
+
+            SHA256 sha256Hash = SHA256.Create();
+
+            RSAPKCS1SignatureDeformatter rsaDeformatter = new RSAPKCS1SignatureDeformatter(rsa);
+            rsaDeformatter.SetHashAlgorithm("SHA256");
+            if (rsaDeformatter.VerifySignature(sha256Hash.ComputeHash(shadowArr[0].ToByteArray()), File.ReadAllBytes("D:\\sig1")))
+            {
+                Console.WriteLine("The signature 1 is valid.");
+            }
+            else
+            {
+                Console.WriteLine("The signature 1 is not valid.");
+            }
+
+            rsaDeformatter.SetHashAlgorithm("SHA256");
+            if (rsaDeformatter.VerifySignature(sha256Hash.ComputeHash(shadowArr[1].ToByteArray()), File.ReadAllBytes("D:\\sig2")))
+            {
+                Console.WriteLine("The signature 2 is valid.");
+            }
+            else
+            {
+                Console.WriteLine("The signature 2 is not valid.");
+            }
+
+
             secret = SS.restoreSecret(shadowArr);
             File.WriteAllBytes(textBoxKey.Text + keyFileName, secret.ToByteArray());
         }
