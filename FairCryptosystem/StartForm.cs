@@ -12,17 +12,41 @@ using System.Globalization;
 using System.Configuration;
 using System.IO;
 using System.Security.Cryptography;
+using Npgsql;
 
 namespace FairCryptosystem
 {
     public partial class StartForm : Form
     {
+        NpgsqlConnection conDataBase = new NpgsqlConnection(ConfigurationManager.AppSettings.Get("conStringKDC"));
+        string notary1ConString = ConfigurationManager.AppSettings.Get("notary1ConString");
+        string notary2ConString = ConfigurationManager.AppSettings.Get("notary2ConString");
+        string notary3ConString = ConfigurationManager.AppSettings.Get("notary3ConString");
+
+
+        NpgsqlConnection[] conNotarys = new NpgsqlConnection[3]
+        {
+            new NpgsqlConnection(ConfigurationManager.AppSettings.Get("notary1ConString")),
+            new NpgsqlConnection(ConfigurationManager.AppSettings.Get("notary2ConString")),
+            new NpgsqlConnection(ConfigurationManager.AppSettings.Get("notary3ConString"))
+        };
         public StartForm()
         {
             InitializeComponent();
+
+            try
+            {
+                conDataBase.Open();
+                conDataBase.Close();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+                return;
+            }
+
         }
 
-        private RSA rsa = RSA.Create();
 
         private uint keyLengthInBytes = Convert.ToUInt32(ConfigurationManager.AppSettings.Get("KeyLengthInBytes"));
         private string keyFileName = ConfigurationManager.AppSettings.Get("KeyFileName");
@@ -37,11 +61,6 @@ namespace FairCryptosystem
         public NumberFormatInfo bigIntegerFormatter = new NumberFormatInfo();
         
 
-        private void buttonRestoreKey_Click(object sender, EventArgs e)
-        {
-            BigInteger result = SS.restoreSecret(shadowArr);
-            pathToFolderTextBox.Text = result.ToString("X", bigIntegerFormatter);
-        }
 
         private void buttonOpenFolder_Click(object sender, EventArgs e)
         {
@@ -50,106 +69,138 @@ namespace FairCryptosystem
             pathToFolderTextBox.Text = folderBrowserDialog1.SelectedPath.ToString() + "\\";
         }
 
-        private void buttonNext_ClickKey(object sender, EventArgs e)
+        
+
+        private void buttonNext_Click(object sender, EventArgs e)
         {
             secret = SS.generateNumber(keyLengthInBytes);
-            File.WriteAllBytes(pathToFolderTextBox.Text + keyFileName, secret.ToByteArray());
-            changeToShadow1();
-        }
+            shadowArr = SS.computeShadows(secret, 3);
+            byte[][] sig = new byte[3][];
+            GOSTSignature sigGOST = new GOSTSignature();
 
-        
-        private void buttonShadow1_Click(object sender, EventArgs e)
-        {
-            Shadow[] shadows = SS.computeShadows(secret, 3);
-            shadowArr = new Shadow[3];
-            for (int i = 0; i < 3; i++)
-            {
-                shadowArr[i] = new Shadow(shadows[i].Number, shadows[i].Value);
+            for (int i = 0; i < 3; i++) {
+                sig[i] = sigGOST.createDigitalSignature(shadowArr[i].Number.ToByteArray().Concat(shadowArr[i].Value.ToByteArray()).ToArray());
+
+                try
+                {
+                    conNotarys[i].Open();
+
+                    using (var cmd = new NpgsqlCommand("INSERT INTO public.shadow (id, number, value, signature, snils) VALUES((COALESCE((SELECT id FROM public.shadow ORDER BY id DESC LIMIT 1), 0) + 1)::integer, " +
+                        "@Number, @Value, @Signature, @Snils) returning id;", conNotarys[i]))
+                    {
+                        NpgsqlParameter snils = cmd.CreateParameter();
+                        snils.ParameterName = "@Snils";
+                        snils.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Char;
+                        snils.Value = textBoxSNILS.Text;
+                        cmd.Parameters.Add(snils);
+
+                        NpgsqlParameter number = cmd.CreateParameter();
+                        number.ParameterName = "@Number";
+                        number.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea;
+                        number.Value = shadowArr[i].Number.ToByteArray();
+                        cmd.Parameters.Add(number);
+
+                        NpgsqlParameter value = cmd.CreateParameter();
+                        value.ParameterName = "@Value";
+                        value.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea;
+                        value.Value = shadowArr[i].Value.ToByteArray();
+                        cmd.Parameters.Add(value);
+
+                        NpgsqlParameter signature = cmd.CreateParameter();
+                        signature.ParameterName = "@Signature";
+                        signature.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea;
+                        signature.Value = sig[i];
+                        cmd.Parameters.Add(signature);
+
+                        int numberOfRows = cmd.ExecuteNonQuery();
+
+                        if (numberOfRows > 0)
+                        {
+                            MessageBox.Show("ОК");
+                        }
+                        else
+                        {
+                            MessageBox.Show(this, "Вы не должны этого видеть. Программа работает неправильно", "Ошибка при отправке запроса в базу данных", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    conNotarys[i].Close();
+                }
+                catch (Exception exception)
+                {
+                    conNotarys[i].Close();
+                    MessageBox.Show(exception.Message);
+                }
             }
-            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Number", shadowArr[0].Number.ToByteArray());
-            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Value", shadowArr[0].Value.ToByteArray());
-
-            ////////////
-            ///
-            File.WriteAllText("D:\\public", rsa.ToXmlString(false));
 
 
-            RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
+            try
+            {
+                conDataBase.Open();
 
-            SHA256 sha256Hash = SHA256.Create();
-               rsaFormatter.SetHashAlgorithm("SHA256");
-            File.WriteAllBytes("D:\\sig1", rsaFormatter.CreateSignature(sha256Hash.ComputeHash(shadowArr[0].ToByteArray())));
-            //////////////
+                using (var cmd = new NpgsqlCommand("INSERT INTO public.user (id, name, surname, patronymic, snils, shadow1_con_string, shadow2_con_string, shadow3_con_string) VALUES((COALESCE((SELECT id FROM public.user ORDER BY id DESC LIMIT 1), 0) + 1)::integer, " +
+                    "@Name, @Surname, @Patronymic, @Snils, @Shadow1, @Shadow2, @Shadow3) returning id;", conDataBase))
+                {
+                    NpgsqlParameter snils = cmd.CreateParameter();
+                    snils.ParameterName = "@Snils";
+                    snils.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Char;
+                    snils.Value = textBoxSNILS.Text;
+                    cmd.Parameters.Add(snils);
 
-            changeToShadow2();
+                    NpgsqlParameter name = cmd.CreateParameter();
+                    name.ParameterName = "@Name";
+                    name.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Char;
+                    name.Value = textBoxName.Text;
+                    cmd.Parameters.Add(name);
+
+                    NpgsqlParameter surname = cmd.CreateParameter();
+                    surname.ParameterName = "@Surname";
+                    surname.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Char;
+                    surname.Value = textBoxSurname.Text;
+                    cmd.Parameters.Add(surname);
+
+                    NpgsqlParameter patronymic = cmd.CreateParameter();
+                    patronymic.ParameterName = "@Patronymic";
+                    patronymic.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Char;
+                    patronymic.Value = textBoxPatronymic.Text;
+                    cmd.Parameters.Add(patronymic);
+
+                    NpgsqlParameter shadow1 = cmd.CreateParameter();
+                    shadow1.ParameterName = "@Shadow1";
+                    shadow1.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Char;
+                    shadow1.Value = notary1ConString;
+                    cmd.Parameters.Add(shadow1);
+
+                    NpgsqlParameter shadow2 = cmd.CreateParameter();
+                    shadow2.ParameterName = "@Shadow2";
+                    shadow2.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Char;
+                    shadow2.Value = notary2ConString;
+                    cmd.Parameters.Add(shadow2);
+
+                    NpgsqlParameter shadow3 = cmd.CreateParameter();
+                    shadow3.ParameterName = "@Shadow3";
+                    shadow3.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Char;
+                    shadow3.Value = notary3ConString;
+                    cmd.Parameters.Add(shadow3);
+
+                    int numberOfRows = cmd.ExecuteNonQuery();
+
+                    if (numberOfRows > 0)
+                    {
+                        MessageBox.Show("ОК");
+                    }
+                    else
+                    {
+                        MessageBox.Show(this, "Проверьте правильность ввода данных", "Ошибка регистрации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                conDataBase.Close();
+            }
+            catch (Exception exception)
+            {
+                conDataBase.Close();
+                MessageBox.Show(exception.Message);
+            }
+
         }
-
-        private void buttonShadow2_Click(object sender, EventArgs e)
-        {
-            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Number", shadowArr[1].Number.ToByteArray());
-            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Value", shadowArr[1].Value.ToByteArray());
-
-            ////////////
-            RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
-
-            SHA256 sha256Hash = SHA256.Create();
-
-            rsaFormatter.SetHashAlgorithm("SHA256");
-            File.WriteAllBytes("D:\\sig2", rsaFormatter.CreateSignature(sha256Hash.ComputeHash(shadowArr[1].ToByteArray())));
-            //////////////
-
-
-            changeToShadow3();
-        }
-
-        private void buttonShadow3_Click(object sender, EventArgs e)
-        {
-            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Number", shadowArr[2].Number.ToByteArray());
-            File.WriteAllBytes(pathToFolderTextBox.Text + shadowFileName + "_Value", shadowArr[2].Value.ToByteArray());
-
-
-            ////////////
-            RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
-
-            SHA256 sha256Hash = SHA256.Create();
-
-            rsaFormatter.SetHashAlgorithm("SHA256");
-            File.WriteAllBytes("D:\\sig3", rsaFormatter.CreateSignature(sha256Hash.ComputeHash(shadowArr[2].ToByteArray())));
-            //////////////
-
-            this.Close();
-        }
-
-        private void changeToShadow1()
-        {
-            this.Text = "Запись первой тени";
-            labelPathToFolder.Text = "Укажите путь к носителю первой тени";
-            labelNext.Text = "Нажмите \"Далее\" чтобы записать \nпервую тень на выбранный носитель";
-            buttonKey.Hide();
-            this.AcceptButton = buttonShadow1;
-            pathToFolderTextBox.Text = "";
-            buttonShadow1.Show();
-        }
-        private void changeToShadow2()
-        {
-            this.Text = "Запись второй тени";
-            labelPathToFolder.Text = "Укажите путь к носителю второй тени";
-            labelNext.Text = "Нажмите \"Далее\" чтобы записать \nвторую тень на выбранный носитель";
-            buttonShadow1.Hide();
-            this.AcceptButton = buttonShadow2;
-            pathToFolderTextBox.Text = "";
-            buttonShadow2.Show();
-        }
-        private void changeToShadow3()
-        {
-            this.Text = "Запись третьей тени";
-            labelPathToFolder.Text = "Укажите путь к носителю третьей тени";
-            labelNext.Text = "Нажмите \"Далее\" чтобы записать \nтретью тень на выбранный носитель";
-            buttonShadow2.Hide();
-            this.AcceptButton = buttonShadow3;
-            pathToFolderTextBox.Text = "";
-            buttonShadow3.Show();
-        }
-
     }
 }
