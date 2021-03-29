@@ -100,6 +100,7 @@ namespace KeyRestoration
             this.buttonStart.Text = "Восстановить ключ";
             this.buttonStart.UseVisualStyleBackColor = true;
             this.buttonStart.Visible = false;
+            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
             // 
             // comboBoxUserInfo
             // 
@@ -109,6 +110,7 @@ namespace KeyRestoration
             this.comboBoxUserInfo.Size = new System.Drawing.Size(383, 21);
             this.comboBoxUserInfo.TabIndex = 10;
             this.comboBoxUserInfo.Visible = false;
+            this.comboBoxUserInfo.TextUpdate += new System.EventHandler(this.comboBoxUserInfo_TextUpdate);
             // 
             // textBoxLogin
             // 
@@ -209,6 +211,7 @@ namespace KeyRestoration
             this.textBoxNewPass.Size = new System.Drawing.Size(383, 20);
             this.textBoxNewPass.TabIndex = 18;
             this.textBoxNewPass.Visible = false;
+            this.textBoxNewPass.TextChanged += new System.EventHandler(this.textBoxNewPass_TextChanged);
             // 
             // textBoxNewLogin
             // 
@@ -251,7 +254,7 @@ namespace KeyRestoration
             // 
             // textBoxSurname
             // 
-            this.textBoxSurname.Location = new System.Drawing.Point(12, 26);
+            this.textBoxSurname.Location = new System.Drawing.Point(20, 26);
             this.textBoxSurname.Name = "textBoxSurname";
             this.textBoxSurname.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxSurname.Size = new System.Drawing.Size(383, 20);
@@ -293,6 +296,7 @@ namespace KeyRestoration
             this.buttonOpenFolder.Text = "Открыть каталог";
             this.buttonOpenFolder.UseVisualStyleBackColor = true;
             this.buttonOpenFolder.Visible = false;
+            this.buttonOpenFolder.Click += new System.EventHandler(this.buttonOpenFolder_Click);
             // 
             // labelPathToFolder
             // 

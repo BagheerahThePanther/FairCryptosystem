@@ -116,7 +116,7 @@ namespace FairCryptosystem
 
                         if (numberOfRows > 0)
                         {
-                            MessageBox.Show("ОК");
+                           // MessageBox.Show("ОК");
                         }
                         else
                         {
@@ -186,19 +186,24 @@ namespace FairCryptosystem
 
                     if (numberOfRows > 0)
                     {
-                        MessageBox.Show("ОК");
+                        conDataBase.Close();
+                        File.WriteAllBytes(pathToFolderTextBox.Text + keyFileName, secret.ToByteArray()); 
+
+                        MessageBox.Show("Пользователь успешно зарегистрирован");
+                        this.Close();
+                        return;
                     }
                     else
                     {
                         MessageBox.Show(this, "Проверьте правильность ввода данных", "Ошибка регистрации", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                conDataBase.Close();
+                if(conDataBase.State == ConnectionState.Open) conDataBase.Close();
             }
             catch (Exception exception)
             {
-                conDataBase.Close();
-                MessageBox.Show(exception.Message);
+                if (conDataBase.State == ConnectionState.Open) conDataBase.Close();
+                MessageBox.Show(exception.ToString());
             }
 
         }
