@@ -24,12 +24,8 @@ namespace FairCryptosystem
         {
             BigInteger number;
             byte[] randomNumber = new byte[lengthInBytes];
-            do
-            {
-                rngCsp.GetBytes(randomNumber);
-                number = new BigInteger(randomNumber);
-            } while (number < 0);
-            //return new BigInteger(randomNumber);
+            rngCsp.GetBytes(randomNumber);
+            number = new BigInteger(randomNumber);
             return getModulus(number);
         }
 
@@ -60,8 +56,6 @@ namespace FairCryptosystem
         public BigInteger restoreSecret(Shadow[] shadows)
         {
             if (shadows.Length < 2) return -1;
-            Console.WriteLine(Math.Exp(BigInteger.Log(1) - BigInteger.Log(shadows[0].Number - shadows[1].Number)));
-            // return getModulus(new BigInteger(Math.Exp(BigInteger.Log(1) - BigInteger.Log(getModulus(shadows[0].Number - shadows[1].Number))) * (double)(shadows[0].Number * shadows[1].Value - shadows[1].Number * shadows[0].Value)));
             return divide(getModulus(shadows[1].Value * shadows[0].Number - shadows[0].Value * shadows[1].Number), getModulus(shadows[0].Number - shadows[1].Number));
         }
 

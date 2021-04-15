@@ -41,6 +41,10 @@ namespace FairCryptosystem
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxSNILS = new System.Windows.Forms.TextBox();
             this.buttonNext = new System.Windows.Forms.Button();
+            this.labelSurname = new System.Windows.Forms.Label();
+            this.labelName = new System.Windows.Forms.Label();
+            this.labelPatronymic = new System.Windows.Forms.Label();
+            this.labelSNILS = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // pathToFolderTextBox
@@ -87,7 +91,7 @@ namespace FairCryptosystem
             this.textBoxSurname.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxSurname.Size = new System.Drawing.Size(369, 20);
             this.textBoxSurname.TabIndex = 16;
-            this.textBoxSurname.Text = "Фамилия";
+            this.textBoxSurname.TextChanged += new System.EventHandler(this.textBoxSurname_TextChanged);
             // 
             // textBoxName
             // 
@@ -96,7 +100,7 @@ namespace FairCryptosystem
             this.textBoxName.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxName.Size = new System.Drawing.Size(369, 20);
             this.textBoxName.TabIndex = 17;
-            this.textBoxName.Text = "Имя";
+            this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
             // 
             // textBoxPatronymic
             // 
@@ -105,7 +109,7 @@ namespace FairCryptosystem
             this.textBoxPatronymic.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxPatronymic.Size = new System.Drawing.Size(369, 20);
             this.textBoxPatronymic.TabIndex = 18;
-            this.textBoxPatronymic.Text = "Отчество";
+            this.textBoxPatronymic.TextChanged += new System.EventHandler(this.textBoxPatronymic_TextChanged);
             // 
             // label1
             // 
@@ -123,7 +127,7 @@ namespace FairCryptosystem
             this.textBoxSNILS.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxSNILS.Size = new System.Drawing.Size(369, 20);
             this.textBoxSNILS.TabIndex = 20;
-            this.textBoxSNILS.Text = "СНИЛС";
+            this.textBoxSNILS.TextChanged += new System.EventHandler(this.textBoxSNILS_TextChanged);
             // 
             // buttonNext
             // 
@@ -135,12 +139,64 @@ namespace FairCryptosystem
             this.buttonNext.UseVisualStyleBackColor = true;
             this.buttonNext.Click += new System.EventHandler(this.buttonNext_Click);
             // 
+            // labelSurname
+            // 
+            this.labelSurname.AutoSize = true;
+            this.labelSurname.BackColor = System.Drawing.SystemColors.Window;
+            this.labelSurname.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.labelSurname.Location = new System.Drawing.Point(16, 28);
+            this.labelSurname.Name = "labelSurname";
+            this.labelSurname.Size = new System.Drawing.Size(56, 13);
+            this.labelSurname.TabIndex = 22;
+            this.labelSurname.Text = "Фамилия";
+            this.labelSurname.Click += new System.EventHandler(this.labelSurname_Click);
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.BackColor = System.Drawing.SystemColors.Window;
+            this.labelName.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.labelName.Location = new System.Drawing.Point(16, 54);
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size(29, 13);
+            this.labelName.TabIndex = 23;
+            this.labelName.Text = "Имя";
+            this.labelName.Click += new System.EventHandler(this.labelName_Click);
+            // 
+            // labelPatronymic
+            // 
+            this.labelPatronymic.AutoSize = true;
+            this.labelPatronymic.BackColor = System.Drawing.SystemColors.Window;
+            this.labelPatronymic.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.labelPatronymic.Location = new System.Drawing.Point(16, 80);
+            this.labelPatronymic.Name = "labelPatronymic";
+            this.labelPatronymic.Size = new System.Drawing.Size(54, 13);
+            this.labelPatronymic.TabIndex = 24;
+            this.labelPatronymic.Text = "Отчество";
+            this.labelPatronymic.Click += new System.EventHandler(this.labelPatronymic_Click);
+            // 
+            // labelSNILS
+            // 
+            this.labelSNILS.AutoSize = true;
+            this.labelSNILS.BackColor = System.Drawing.SystemColors.Window;
+            this.labelSNILS.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.labelSNILS.Location = new System.Drawing.Point(16, 106);
+            this.labelSNILS.Name = "labelSNILS";
+            this.labelSNILS.Size = new System.Drawing.Size(45, 13);
+            this.labelSNILS.TabIndex = 25;
+            this.labelSNILS.Text = "СНИЛС";
+            this.labelSNILS.Click += new System.EventHandler(this.labelSNILS_Click);
+            // 
             // StartForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(390, 227);
+            this.Controls.Add(this.labelSNILS);
+            this.Controls.Add(this.labelPatronymic);
+            this.Controls.Add(this.labelName);
+            this.Controls.Add(this.labelSurname);
             this.Controls.Add(this.buttonNext);
             this.Controls.Add(this.textBoxSNILS);
             this.Controls.Add(this.label1);
@@ -174,6 +230,10 @@ namespace FairCryptosystem
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxSNILS;
         private System.Windows.Forms.Button buttonNext;
+        private System.Windows.Forms.Label labelSurname;
+        private System.Windows.Forms.Label labelName;
+        private System.Windows.Forms.Label labelPatronymic;
+        private System.Windows.Forms.Label labelSNILS;
     }
 }
 

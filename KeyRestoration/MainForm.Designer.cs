@@ -48,9 +48,6 @@ namespace KeyRestoration
             this.textBoxNewPass = new System.Windows.Forms.TextBox();
             this.textBoxNewLogin = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBoxPatronymic = new System.Windows.Forms.TextBox();
-            this.textBoxName = new System.Windows.Forms.TextBox();
-            this.textBoxSurname = new System.Windows.Forms.TextBox();
             this.buttonBack = new System.Windows.Forms.Button();
             this.buttonExit = new System.Windows.Forms.Button();
             this.buttonOpenFolder = new System.Windows.Forms.Button();
@@ -58,6 +55,12 @@ namespace KeyRestoration
             this.pathToFolderTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.labelPatronymic = new System.Windows.Forms.Label();
+            this.labelName = new System.Windows.Forms.Label();
+            this.labelSurname = new System.Windows.Forms.Label();
+            this.textBoxPatronymic = new System.Windows.Forms.TextBox();
+            this.textBoxName = new System.Windows.Forms.TextBox();
+            this.textBoxSurname = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // labelShadow1
@@ -232,36 +235,6 @@ namespace KeyRestoration
             this.label5.Text = "Укажите фамилию, имя и отчество, а также придумайте логин и пароль";
             this.label5.Visible = false;
             // 
-            // textBoxPatronymic
-            // 
-            this.textBoxPatronymic.Location = new System.Drawing.Point(12, 78);
-            this.textBoxPatronymic.Name = "textBoxPatronymic";
-            this.textBoxPatronymic.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxPatronymic.Size = new System.Drawing.Size(383, 20);
-            this.textBoxPatronymic.TabIndex = 25;
-            this.textBoxPatronymic.Text = "Отчество";
-            this.textBoxPatronymic.Visible = false;
-            // 
-            // textBoxName
-            // 
-            this.textBoxName.Location = new System.Drawing.Point(12, 52);
-            this.textBoxName.Name = "textBoxName";
-            this.textBoxName.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxName.Size = new System.Drawing.Size(383, 20);
-            this.textBoxName.TabIndex = 24;
-            this.textBoxName.Text = "Имя";
-            this.textBoxName.Visible = false;
-            // 
-            // textBoxSurname
-            // 
-            this.textBoxSurname.Location = new System.Drawing.Point(20, 26);
-            this.textBoxSurname.Name = "textBoxSurname";
-            this.textBoxSurname.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxSurname.Size = new System.Drawing.Size(383, 20);
-            this.textBoxSurname.TabIndex = 23;
-            this.textBoxSurname.Text = "Фамилия";
-            this.textBoxSurname.Visible = false;
-            // 
             // buttonBack
             // 
             this.buttonBack.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -338,11 +311,86 @@ namespace KeyRestoration
             this.label7.TabIndex = 33;
             this.label7.Text = "Если вы еще не зарегистрированы, нажмите кнопку \"К регистрации\"";
             // 
+            // labelPatronymic
+            // 
+            this.labelPatronymic.AutoSize = true;
+            this.labelPatronymic.BackColor = System.Drawing.SystemColors.Window;
+            this.labelPatronymic.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.labelPatronymic.Location = new System.Drawing.Point(16, 81);
+            this.labelPatronymic.Name = "labelPatronymic";
+            this.labelPatronymic.Size = new System.Drawing.Size(54, 13);
+            this.labelPatronymic.TabIndex = 39;
+            this.labelPatronymic.Text = "Отчество";
+            this.labelPatronymic.Visible = false;
+            this.labelPatronymic.Click += new System.EventHandler(this.labelPatronymic_Click);
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.BackColor = System.Drawing.SystemColors.Window;
+            this.labelName.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.labelName.Location = new System.Drawing.Point(16, 55);
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size(29, 13);
+            this.labelName.TabIndex = 38;
+            this.labelName.Text = "Имя";
+            this.labelName.Visible = false;
+            this.labelName.Click += new System.EventHandler(this.labelName_Click);
+            // 
+            // labelSurname
+            // 
+            this.labelSurname.AutoSize = true;
+            this.labelSurname.BackColor = System.Drawing.SystemColors.Window;
+            this.labelSurname.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.labelSurname.Location = new System.Drawing.Point(16, 29);
+            this.labelSurname.Name = "labelSurname";
+            this.labelSurname.Size = new System.Drawing.Size(56, 13);
+            this.labelSurname.TabIndex = 37;
+            this.labelSurname.Text = "Фамилия";
+            this.labelSurname.Visible = false;
+            this.labelSurname.Click += new System.EventHandler(this.labelSurname_Click);
+            // 
+            // textBoxPatronymic
+            // 
+            this.textBoxPatronymic.Location = new System.Drawing.Point(12, 78);
+            this.textBoxPatronymic.Name = "textBoxPatronymic";
+            this.textBoxPatronymic.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxPatronymic.Size = new System.Drawing.Size(383, 20);
+            this.textBoxPatronymic.TabIndex = 36;
+            this.textBoxPatronymic.Visible = false;
+            this.textBoxPatronymic.TextChanged += new System.EventHandler(this.textBoxPatronymic_TextChanged);
+            // 
+            // textBoxName
+            // 
+            this.textBoxName.Location = new System.Drawing.Point(12, 52);
+            this.textBoxName.Name = "textBoxName";
+            this.textBoxName.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxName.Size = new System.Drawing.Size(383, 20);
+            this.textBoxName.TabIndex = 35;
+            this.textBoxName.Visible = false;
+            this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
+            // 
+            // textBoxSurname
+            // 
+            this.textBoxSurname.Location = new System.Drawing.Point(12, 26);
+            this.textBoxSurname.Name = "textBoxSurname";
+            this.textBoxSurname.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxSurname.Size = new System.Drawing.Size(383, 20);
+            this.textBoxSurname.TabIndex = 34;
+            this.textBoxSurname.Visible = false;
+            this.textBoxSurname.TextChanged += new System.EventHandler(this.textBoxSurname_TextChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(411, 216);
+            this.Controls.Add(this.labelPatronymic);
+            this.Controls.Add(this.labelName);
+            this.Controls.Add(this.labelSurname);
+            this.Controls.Add(this.textBoxPatronymic);
+            this.Controls.Add(this.textBoxName);
+            this.Controls.Add(this.textBoxSurname);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.buttonOpenFolder);
@@ -351,9 +399,6 @@ namespace KeyRestoration
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonBack);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.textBoxPatronymic);
-            this.Controls.Add(this.textBoxName);
-            this.Controls.Add(this.textBoxSurname);
             this.Controls.Add(this.buttonRegisterNew);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label4);
@@ -374,7 +419,8 @@ namespace KeyRestoration
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Восстановление ключа";
+            this.Text = "Восстановление ключа: авторизация";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -399,9 +445,6 @@ namespace KeyRestoration
         private System.Windows.Forms.TextBox textBoxNewPass;
         private System.Windows.Forms.TextBox textBoxNewLogin;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBoxPatronymic;
-        private System.Windows.Forms.TextBox textBoxName;
-        private System.Windows.Forms.TextBox textBoxSurname;
         private System.Windows.Forms.Button buttonBack;
         private System.Windows.Forms.Button buttonExit;
         private System.Windows.Forms.Button buttonOpenFolder;
@@ -409,6 +452,12 @@ namespace KeyRestoration
         private System.Windows.Forms.TextBox pathToFolderTextBox;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label labelPatronymic;
+        private System.Windows.Forms.Label labelName;
+        private System.Windows.Forms.Label labelSurname;
+        private System.Windows.Forms.TextBox textBoxPatronymic;
+        private System.Windows.Forms.TextBox textBoxName;
+        private System.Windows.Forms.TextBox textBoxSurname;
     }
 }
 

@@ -101,6 +101,7 @@
     <Compile Include="GOSTHash.cs" />
     <Compile Include="GOSTSignature.cs" />
     <Compile Include="ModularArithmetic.cs" />
+    <Compile Include="SnilsValidator.cs" />
     <Compile Include="StartForm.cs">
       <SubType>Form</SubType>
     </Compile>

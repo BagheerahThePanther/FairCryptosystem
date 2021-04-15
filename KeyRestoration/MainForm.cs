@@ -60,12 +60,28 @@ namespace KeyRestoration
 
         private void buttonSignIn_Click(object sender, EventArgs e)
         {
+            // проверка на указание логина
+            if (textBoxLogin.Text == "")
+            {
+                MessageBox.Show(this, "Не указан логин. Заполните все поля формы и попробуйте снова",
+                                        "Ошибка входа", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // проверка на указание пароля
+            if (textBoxPassword.Text == "")
+            {
+                MessageBox.Show(this, "Не указан пароль. Заполните все поля формы и попробуйте снова",
+                                        "Ошибка входа", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             try
 
             {
                 conDataBase.Open();
 
-                using (var cmd = new NpgsqlCommand("SELECT * FROM public.investigator WHERE login = @Login AND password = @Password;", conDataBase))
+                using (var cmd = new NpgsqlCommand("SELECT name, surname, patronymic FROM public.investigator WHERE login = @Login AND password = @Password;", conDataBase))
                 {
                     NpgsqlParameter login = cmd.CreateParameter();
                     login.ParameterName = "@Login";
@@ -75,20 +91,21 @@ namespace KeyRestoration
 
                     NpgsqlParameter pass = cmd.CreateParameter();
                     pass.ParameterName = "@Password";
-                    pass.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Char;
-                    pass.Value = Encoding.Default.GetString(GOSTHash.createHash(Encoding.Default.GetBytes(textBoxPassword.Text), true));
+                    pass.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea;
+                    pass.Value = GOSTHash.createHash(Encoding.UTF8.GetBytes(textBoxPassword.Text), true);
                     cmd.Parameters.Add(pass);
 
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.HasRows)
                         {
-                            MessageBox.Show("ОК");
-                            changeToMain();
+                            // MessageBox.Show("ОК");
+                            reader.Read();
+                            changeToMain(reader.GetString(1) + " " + reader.GetString(0) + " " + reader.GetString(2));
                         }
                         else
                         {
-                            MessageBox.Show(this, "Проверьте правильность ввода логина и пароля", "Ошибка входа", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(this, "Проверьте правильность ввода логина и пароля и попробуйте снова", "Ошибка входа", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     
@@ -100,8 +117,6 @@ namespace KeyRestoration
                 conDataBase.Close();
                 MessageBox.Show(exception.Message);
             }
-
-
         }
 
         private void changeToRegister()
@@ -110,13 +125,15 @@ namespace KeyRestoration
             changeMainVisibility(false);
             changeRegisterVisibility(true);
             clearAllFields();
+            Text = "Восстановление ключа: регистрация";
         }
-        private void changeToMain()
+        private void changeToMain(string userName)
         {
             changeLoginVisibility(false);
             changeMainVisibility(true);
             changeRegisterVisibility(false);
             clearAllFields();
+            Text = "Восстановление ключа: текущий пользователь - " + userName;
         }
 
         private void changeToLogin()
@@ -125,12 +142,17 @@ namespace KeyRestoration
             changeMainVisibility(false);
             changeRegisterVisibility(false);
             clearAllFields();
+            Text = "Восстановление ключа: авторизация";
         }
         private void changeRegisterVisibility(bool isVisible)
         {
             label3.Visible = isVisible;
             label4.Visible = isVisible;
             label5.Visible = isVisible;
+            labelName.Visible = isVisible;
+            labelSurname.Visible = isVisible;
+            labelPatronymic.Visible = isVisible;
+
             textBoxName.Visible = isVisible;
             textBoxSurname.Visible = isVisible;
             textBoxPatronymic.Visible = isVisible;
@@ -138,7 +160,7 @@ namespace KeyRestoration
             textBoxNewPass.Visible = isVisible;
             buttonBack.Visible = isVisible;
             buttonRegisterNew.Visible = isVisible;
-        }
+          }
 
         private void changeMainVisibility(bool isVisible)
         {
@@ -168,9 +190,9 @@ namespace KeyRestoration
 
         private void clearAllFields()
         {
-            textBoxName.Text = "Имя";
-            textBoxSurname.Text = "Фамилия";
-            textBoxPatronymic.Text = "Отчество";
+            textBoxName.Text = "";
+            textBoxSurname.Text = "";
+            textBoxPatronymic.Text = "";
             textBoxNewLogin.Text = "";
             textBoxNewPass.Text = "";
 
@@ -189,6 +211,47 @@ namespace KeyRestoration
 
         private void buttonRegisterNew_Click(object sender, EventArgs e)
         {
+            // проверка на указание имени
+            if (textBoxName.Text == "")
+            {
+                MessageBox.Show(this, "Не указано имя пользователя. Заполните все поля формы и попробуйте снова",
+                                        "Ошибка регистрации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // проверка на указание фамилии
+            if (textBoxSurname.Text == "")
+            {
+                MessageBox.Show(this, "Не указана фамилия пользователя. Заполните все поля формы и попробуйте снова",
+                                        "Ошибка регистрации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            // проверка на указание отчества
+            if (textBoxPatronymic.Text == "")
+            {
+                MessageBox.Show(this, "Не указано отчество пользователя. Заполните все поля формы и попробуйте снова",
+                                        "Ошибка регистрации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // проверка на указание логина
+            if (textBoxNewLogin.Text == "")
+            {
+                MessageBox.Show(this, "Не указан логин пользователя. Заполните все поля формы и попробуйте снова",
+                                        "Ошибка регистрации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // проверка на указание пароля
+            if (textBoxNewPass.Text == "")
+            {
+                MessageBox.Show(this, "Не указан пароль пользователя. Заполните все поля формы и попробуйте снова",
+                                        "Ошибка регистрации", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+
+            ///
+
             try
             {
                 conDataBase.Open();
@@ -203,8 +266,8 @@ namespace KeyRestoration
 
                     NpgsqlParameter pass = cmd.CreateParameter();
                     pass.ParameterName = "@Password";
-                    pass.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Char;
-                    pass.Value = Encoding.Default.GetString(GOSTHash.createHash(Encoding.Default.GetBytes(textBoxNewPass.Text), true));
+                    pass.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea;
+                    pass.Value = GOSTHash.createHash(Encoding.UTF8.GetBytes(textBoxNewPass.Text), true);
                     cmd.Parameters.Add(pass);
 
                     NpgsqlParameter name = cmd.CreateParameter();
@@ -247,6 +310,7 @@ namespace KeyRestoration
             {
                 conDataBase.Close();
                 MessageBox.Show(exception.Message);
+                return;
             }
 
 
@@ -266,10 +330,35 @@ namespace KeyRestoration
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
+            // проверка на указание пользователя
+            if (comboBoxUserInfo.Text == "" || comboBoxUserInfo.SelectedItem == null)
+            {
+                MessageBox.Show(this, "Не указан пользователь. Заполните все поля формы и попробуйте снова",
+                                        "Ошибка восстановления ключа", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // проверка на указание номера дела
+            if (textBoxCaseNumber.Text == "")
+            {
+                MessageBox.Show(this, "Не указан номер дела. Заполните все поля формы и попробуйте снова",
+                                        "Ошибка восстановления ключа", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // проверка на указание каталога
+            if (pathToFolderTextBox.Text == "")
+            {
+                MessageBox.Show(this, "Не указан каталог восстанавливаемого ключа. Заполните все поля формы и попробуйте снова",
+                                        "Ошибка восстановления ключа", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             int id = (comboBoxUserInfo.SelectedItem as dynamic).Value;
             string[] shadowConString = new string[3];
             string snils = "";
-            Console.WriteLine(id);
+            int numberOfCorrectShadows = 0;
+            bool[] isShadowCorrect = new bool[3] { false, false, false};
             try
             {
                 conDataBase.Open();
@@ -308,10 +397,10 @@ namespace KeyRestoration
                 MessageBox.Show(exception.Message);
             }
 
-            Shadow[] shadows = new Shadow[2];
-            byte[][] signatures = new byte[2][];
+            Shadow[] shadows = new Shadow[3];
+            byte[][] signatures = new byte[3][];
             
-            for(int i = 0; i < 2; i++)
+            for(int i = 0; i < 3; i++)
             {
                 NpgsqlConnection conDataBaseShadow = new NpgsqlConnection(shadowConString[i]);
 
@@ -331,8 +420,6 @@ namespace KeyRestoration
                         {
                             if (reader.HasRows)
                             {
-                                byte[] buffer = new byte[16];
-                                // MessageBox.Show("ОК");
                                 reader.Read();
 
                                 shadows[i] = new Shadow(new BigInteger(((byte[])reader[1]).Concat(new byte[] { 0 }).ToArray()), new BigInteger(((byte[])reader[2]).Concat(new byte[] { 0 }).ToArray()));
@@ -341,11 +428,17 @@ namespace KeyRestoration
                                 // Чекаем подписи
 
                                 GOSTSignature sig = new GOSTSignature();
-                                if (!sig.checkDigitalSignature(shadows[i].Number.ToByteArray().Concat(shadows[i].Value.ToByteArray()).ToArray(), signatures[i]))
+                                if (sig.checkDigitalSignature(shadows[i].Number.ToByteArray().Concat(shadows[i].Value.ToByteArray()).ToArray(), signatures[i]))
                                 {
-                                    MessageBox.Show(this, "Тень номер " + (i + 1) + " не проходит проверку подписи", "Подпись неверна", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    numberOfCorrectShadows++;
+                                    isShadowCorrect[i] = true;
+                                    /*DialogResult dialogResult = MessageBox.Show(this, "Тень номер " + (i + 1) + " не проходит проверку подписи. Все равно продолжить процесс восстановления?", "Подпись неверна", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                                    if (dialogResult == DialogResult.No)
+                                    {
+                                        MessageBox.Show(this, "Восстановление ключа прервано по причине неверной подписи тени.", "Операция прервана", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        return;
+                                    }*/
                                 }
-
                             }
                             else
                             {
@@ -364,24 +457,46 @@ namespace KeyRestoration
 
             }
 
+            if(numberOfCorrectShadows == 2)
+            {
+                DialogResult dialogResult = MessageBox.Show(this, "Тень номер " + (Array.FindIndex(isShadowCorrect, value => value == false) + 1) + " не проходит проверку подписи. Две другие тени действительны и могут восстановить секретный ключ. Продолжить процесс восстановления?", "Подпись неверна", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (dialogResult == DialogResult.No)
+                {
+                    MessageBox.Show(this, "Восстановление ключа прервано по причине неверной подписи тени.", "Операция прервана", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                } else
+                {
+                    shadows = shadows.Except(new Shadow[] { shadows[Array.FindIndex(isShadowCorrect, value => value == false)] }).ToArray();
+                }
+            }
+            if(numberOfCorrectShadows < 2)
+            {
+                DialogResult dialogResult = MessageBox.Show(this, "Количество теней, не прошедших проверку подписи, превышает 1. Восстановленный по неправильным теням ключ может оказаться недействительным. Все равно продолжить процесс восстановления?", "Подписи неверны", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (dialogResult == DialogResult.No)
+                {
+                    MessageBox.Show(this, "Восстановление ключа прервано по причине неверной подписи тени.", "Операция прервана", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+
             SecretSharing SS = new SecretSharing();
             BigInteger secret = SS.restoreSecret(shadows);
 
-            File.WriteAllBytes(pathToFolderTextBox.Text + keyFileName, secret.ToByteArray());
+            File.WriteAllBytes(pathToFolderTextBox.Text + keyFileName + comboBoxUserInfo.Text.Split(' ').Last(), secret.ToByteArray());
             MessageBox.Show(this, "Вы можете найти восстановленный секретный ключ в указанном ранее каталоге", "Секретный ключ успешно восстановлен", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 
         private void comboBoxUserInfo_TextUpdate(object sender, EventArgs e)
         {
-            // MessageBox.Show("You are in the ComboBox.TextUpdate event.");
-       
+            string text = comboBoxUserInfo.Text;
             if(comboBoxUserInfo.Text != "")
             try
             {
                 conDataBase.Open();
                 
-                using (var cmd = new NpgsqlCommand("SELECT id, surname, name, patronymic, snils FROM public.user WHERE name LIKE @String OR surname LIKE @String OR patronymic LIKE @String OR snils LIKE @String;", conDataBase))
+                using (var cmd = new NpgsqlCommand("SELECT id, surname, name, patronymic, snils FROM public.user WHERE UPPER(name) LIKE UPPER(@String) OR UPPER(surname) LIKE " +
+                    "UPPER(@String) OR UPPER(patronymic) LIKE UPPER(@String) OR UPPER(snils) LIKE UPPER(@String);", conDataBase))
                 {
                     NpgsqlParameter searchString = cmd.CreateParameter();
                     searchString.ParameterName = "@String";
@@ -393,7 +508,6 @@ namespace KeyRestoration
                     {
                         if (reader.HasRows)
                         {
-                            // MessageBox.Show("ОК");
                             comboBoxUserInfo.Items.Clear();
                             comboBoxUserInfo.SelectionStart = comboBoxUserInfo.Text.Length;
                             comboBoxUserInfo.SelectionLength = 0;
@@ -404,19 +518,17 @@ namespace KeyRestoration
                                     string result = reader.GetString(1) + " " + reader.GetString(2) + " " + reader.GetString(3) + " " + reader.GetString(4);
                                         comboBoxUserInfo.Items.Add(new { Text = result, Value = reader.GetValue(0)});
                                         comboBoxUserInfo.DroppedDown = true;
+                                        comboBoxUserInfo.Text = text;
+                                        comboBoxUserInfo.SelectionStart = comboBoxUserInfo.Text.Length;
+                                        comboBoxUserInfo.SelectionLength = 0;
                                         Cursor.Current = Cursors.Default;
                                     }
                                 catch (Exception exception)
                                 {
-                                   // conDataBase.Close();
                                     MessageBox.Show(exception.Message);
                                 }
 
                             }
-                        }
-                        else
-                        {
-                            // MessageBox.Show(this, "Проверьте правильность ввода логина и пароля", "Ошибка входа", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
 
@@ -435,6 +547,62 @@ namespace KeyRestoration
             folderBrowserDialog1.RootFolder = Environment.SpecialFolder.MyComputer;
             folderBrowserDialog1.ShowDialog();
             pathToFolderTextBox.Text = folderBrowserDialog1.SelectedPath.ToString() + "\\";
+
+        }
+
+        private void textBoxSurname_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxSurname.Text == "")
+            {
+                labelSurname.Visible = true;
+            }
+            else
+            {
+                labelSurname.Visible = false;
+            }
+        }
+
+        private void textBoxName_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxName.Text == "")
+            {
+                labelName.Visible = true;
+            }
+            else
+            {
+                labelName.Visible = false;
+            }
+        }
+
+        private void textBoxPatronymic_TextChanged(object sender, EventArgs e)
+        {
+            if (textBoxPatronymic.Text == "")
+            {
+                labelPatronymic.Visible = true;
+            }
+            else
+            {
+                labelPatronymic.Visible = false;
+            }
+        }
+
+        private void labelSurname_Click(object sender, EventArgs e)
+        {
+            textBoxSurname.Focus();
+        }
+
+        private void labelName_Click(object sender, EventArgs e)
+        {
+            textBoxName.Focus();
+        }
+
+        private void labelPatronymic_Click(object sender, EventArgs e)
+        {
+            textBoxPatronymic.Focus();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
 
         }
     }
