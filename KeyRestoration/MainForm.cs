@@ -477,6 +477,23 @@ namespace KeyRestoration
                     MessageBox.Show(this, "Восстановление ключа прервано по причине неверной подписи тени.", "Операция прервана", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
+                else
+                {
+                    // Если несколько теней не прошли проверку подписи, пытаемся восстановить секрет по всем возможным комбинациям из двух теней
+                    // первая + вторая (массив shadows не меняется, так как функция restoreSecret() обрабатывает только первые два элемента массива
+                    SecretSharing SS1 = new SecretSharing();
+                    BigInteger secret1 = SS1.restoreSecret(shadows);
+                    // первая + третья (исключаем вторую из массива)
+                    BigInteger secret2 = SS1.restoreSecret(shadows.Except(new Shadow[] { shadows[1] }).ToArray());
+                    // вторая + третья (исключаем первую)
+                    BigInteger secret3 = SS1.restoreSecret(shadows.Except(new Shadow[] { shadows[0] }).ToArray());
+                    File.WriteAllBytes(pathToFolderTextBox.Text + keyFileName + comboBoxUserInfo.Text.Split(' ').Last() + "_1+2", secret1.ToByteArray());
+                    File.WriteAllBytes(pathToFolderTextBox.Text + keyFileName + comboBoxUserInfo.Text.Split(' ').Last() + "_1+3", secret2.ToByteArray());
+                    File.WriteAllBytes(pathToFolderTextBox.Text + keyFileName + comboBoxUserInfo.Text.Split(' ').Last() + "_2+3", secret3.ToByteArray());
+
+                    MessageBox.Show(this, "В указанном ранее каталоге вы найдете три файла с восстановленным ключом. Один из них может содержать корректный секретный ключ.", "Завершена попытка восстановить секретный ключ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
             }
 
             SecretSharing SS = new SecretSharing();
@@ -484,7 +501,6 @@ namespace KeyRestoration
 
             File.WriteAllBytes(pathToFolderTextBox.Text + keyFileName + comboBoxUserInfo.Text.Split(' ').Last(), secret.ToByteArray());
             MessageBox.Show(this, "Вы можете найти восстановленный секретный ключ в указанном ранее каталоге", "Секретный ключ успешно восстановлен", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
         }
 
         private void comboBoxUserInfo_TextUpdate(object sender, EventArgs e)
