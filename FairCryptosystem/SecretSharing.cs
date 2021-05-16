@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Numerics;
 using System.Configuration;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.Security.Cryptography;
 
@@ -39,15 +34,12 @@ namespace FairCryptosystem
             }
 
             BigInteger coefficientA = getModulus(generateNumber(keyLengthInBytes));
-            //  BigInteger currentNumber = 1;
             BigInteger currentNumber = generateNumber(shadowNumberLengthInBytes);
             foreach (Shadow shadow in shadows)
             {
                 BigInteger newValue = getModulus((coefficientA * currentNumber) + secret);
                 shadow.Number = currentNumber;
                 shadow.Value = newValue;
-                Console.WriteLine(secret.ToString() + " " + coefficientA.ToString() + " " + currentNumber.ToString() + " " + newValue.ToString());
-                //currentNumber++;
                 currentNumber = generateNumber(shadowNumberLengthInBytes);
             }
             return shadows;

@@ -84,7 +84,6 @@ namespace KeyRestoration
 
         public byte[] createDigitalSignature(byte[] message, byte[] privateKey)
         {
-
             BigInteger d = new BigInteger(privateKey.Concat(new byte[] { 0 }).ToArray());
 
             // Шаг 1 - Вычисление хэша

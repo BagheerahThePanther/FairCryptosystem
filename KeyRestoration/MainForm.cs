@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Globalization;
 using System.Configuration;
 using System.Numerics;
 using System.IO;
-using System.Security.Cryptography;
 using Npgsql;
-
-
-
-
 
 namespace KeyRestoration
 {
@@ -25,16 +16,13 @@ namespace KeyRestoration
         NpgsqlConnection conDataBase = new NpgsqlConnection(ConfigurationManager.AppSettings.Get("conString"));
         private string keyFileName = ConfigurationManager.AppSettings.Get("KeyFileName");
 
-
         public MainForm()
         {
             InitializeComponent();
             comboBoxUserInfo.DisplayMember = "Text";
             comboBoxUserInfo.ValueMember = "Value";
-
             textBoxLogin.Text = "login";
             textBoxPassword.Text = "password";
-
             try
             {
                 conDataBase.Open();
@@ -45,13 +33,10 @@ namespace KeyRestoration
                 MessageBox.Show(exception.Message);
                 return;
             }
-
-
         }
 
         private DataTable dataTable = new DataTable();
         private List<string> tableNames = new List<string>();
-
 
         private void buttonRegister_Click(object sender, EventArgs e)
         {
@@ -77,7 +62,6 @@ namespace KeyRestoration
             }
 
             try
-
             {
                 conDataBase.Open();
 
@@ -99,7 +83,6 @@ namespace KeyRestoration
                     {
                         if (reader.HasRows)
                         {
-                            // MessageBox.Show("ОК");
                             reader.Read();
                             changeToMain(reader.GetString(1) + " " + reader.GetString(0) + " " + reader.GetString(2));
                         }
@@ -173,7 +156,6 @@ namespace KeyRestoration
             buttonOpenFolder.Visible = isVisible;
             buttonStart.Visible = isVisible;
             buttonExit.Visible = isVisible;
-
         }
 
         private void changeLoginVisibility(bool isVisible)
@@ -195,11 +177,9 @@ namespace KeyRestoration
             textBoxPatronymic.Text = "";
             textBoxNewLogin.Text = "";
             textBoxNewPass.Text = "";
-
             comboBoxUserInfo.Text = "";
             textBoxCaseNumber.Text = "";
             pathToFolderTextBox.Text = "";
-
             textBoxLogin.Text = "";
             textBoxPassword.Text = "";
         }
@@ -249,9 +229,6 @@ namespace KeyRestoration
                 return;
             }
 
-
-            ///
-
             try
             {
                 conDataBase.Open();
@@ -288,21 +265,16 @@ namespace KeyRestoration
                     patronymic.Value = textBoxPatronymic.Text;
                     cmd.Parameters.Add(patronymic);
 
-
-
                     int numberOfRows = cmd.ExecuteNonQuery();
 
                     if (numberOfRows > 0)
                     {
-                       // MessageBox.Show("ОК");
                         changeToLogin();
                     }
                     else
                     {
                         MessageBox.Show(this, "Проверьте правильность ввода данных", "Ошибка регистрации", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-
-
                 }
                 conDataBase.Close();
             }
@@ -312,9 +284,6 @@ namespace KeyRestoration
                 MessageBox.Show(exception.Message);
                 return;
             }
-
-
-
             changeToLogin();
         }
 
@@ -323,10 +292,7 @@ namespace KeyRestoration
             changeToLogin();
         }
 
-        private void textBoxNewPass_TextChanged(object sender, EventArgs e)
-        {
-
-        }
+        private void textBoxNewPass_TextChanged(object sender, EventArgs e) {}
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
@@ -375,7 +341,6 @@ namespace KeyRestoration
                     {
                         if (reader.HasRows)
                         {
-                            // MessageBox.Show("ОК");
                             reader.Read();
                             shadowConString[0] = reader.GetString(1);
                             shadowConString[1] = reader.GetString(2);
@@ -387,7 +352,6 @@ namespace KeyRestoration
                             MessageBox.Show(this, "Чет не так работает, хз", "Ошибка чтения", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
-
                 }
                 conDataBase.Close();
             }
@@ -617,9 +581,6 @@ namespace KeyRestoration
             textBoxPatronymic.Focus();
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-
-        }
+        private void MainForm_Load(object sender, EventArgs e) {}
     }
 }

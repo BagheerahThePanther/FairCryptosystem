@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Numerics;
 using System.Globalization;
 using System.Configuration;
 using System.IO;
-using System.Security.Cryptography;
 using Npgsql;
 
 namespace FairCryptosystem
@@ -23,7 +17,6 @@ namespace FairCryptosystem
         string notary2ConString = ConfigurationManager.AppSettings.Get("notary2ConString");
         string notary3ConString = ConfigurationManager.AppSettings.Get("notary3ConString");
 
-
         NpgsqlConnection[] conNotarys = new NpgsqlConnection[3]
         {
             new NpgsqlConnection(ConfigurationManager.AppSettings.Get("notary1ConString")),
@@ -33,7 +26,6 @@ namespace FairCryptosystem
         public StartForm()
         {
             InitializeComponent();
-
             try
             {
                 conDataBase.Open();
@@ -44,32 +36,22 @@ namespace FairCryptosystem
                 MessageBox.Show(exception.Message);
                 return;
             }
-
         }
-
-
         private uint keyLengthInBytes = Convert.ToUInt32(ConfigurationManager.AppSettings.Get("KeyLengthInBytes"));
         private string keyFileName = ConfigurationManager.AppSettings.Get("KeyFileName");
         private string shadowFileName = ConfigurationManager.AppSettings.Get("ShadowFileName");
         private uint shadowNumberLengthInBytes = Convert.ToUInt32(ConfigurationManager.AppSettings.Get("ShadowNumberLengthInBytes"));
-
-
         private readonly SecretSharing SS = new SecretSharing();
         private BigInteger secret;
         private Shadow[] shadowArr;
-
         public NumberFormatInfo bigIntegerFormatter = new NumberFormatInfo();
-        
-
 
         private void buttonOpenFolder_Click(object sender, EventArgs e)
         {
             folderBrowserDialog1.RootFolder = Environment.SpecialFolder.MyComputer;
             folderBrowserDialog1.ShowDialog();
             pathToFolderTextBox.Text = folderBrowserDialog1.SelectedPath.ToString() + "\\";
-        }
-
-        
+        }     
 
         private void buttonNext_Click(object sender, EventArgs e)
         {
@@ -108,7 +90,6 @@ namespace FairCryptosystem
                                         "Ошибка регистрации", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
 
             // проверка валидности СНИЛС
             try
@@ -158,7 +139,6 @@ namespace FairCryptosystem
                 MessageBox.Show(exception.Message);
             }
 
-            ///////
             secret = SS.generateNumber(keyLengthInBytes);
             shadowArr = SS.computeShadows(secret, 3);
             byte[][] sig = new byte[3][];

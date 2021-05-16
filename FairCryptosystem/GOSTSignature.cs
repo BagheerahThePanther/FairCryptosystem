@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Numerics;
 using System.Configuration;
 using System.Globalization;
 using System.Security.Cryptography;
-
 
 namespace FairCryptosystem
 {
@@ -84,7 +80,6 @@ namespace FairCryptosystem
 
         public byte[] createDigitalSignature(byte[] message, byte[] privateKey)
         {
-
             BigInteger d = new BigInteger(privateKey.Concat(new byte[] { 0 }).ToArray());
 
             // Шаг 1 - Вычисление хэша
@@ -221,6 +216,5 @@ namespace FairCryptosystem
             b = ModularArithmetic.getModulus(2 * K, p);
             return b;
         }
-
     }
 }
